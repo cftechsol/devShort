@@ -17,6 +17,7 @@ if ($config_content["installer"]["password"]) {
 # Rewrite rule to get the short URLs
 RewriteEngine On
 RewriteBase $installation_path
+RewriteCond %{REQUEST_URI} ^/admin [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ {$installation_path}redirect.php?short=$1 [L]";
@@ -25,11 +26,11 @@ RewriteRule ^(.*)$ {$installation_path}redirect.php?short=$1 [L]";
     // Create the .htpasswd for the secure directory. If already a hashed password is there, copy it.
     $htpasswd_path = implode(DIRECTORY_SEPARATOR, array(__DIR__, "admin", ".htpasswd"));
     $admin_password = $config_content["installer"]["password"];
-    if (password_get_info($admin_password)["algo"] === 0) {
-        $hash = password_hash($admin_password, PASSWORD_DEFAULT);
-    } else {
-        $hash = $admin_password;  
-    }
+    //if (password_get_info($admin_password)["algo"] === 0) {
+    $hash = password_hash($admin_password, PASSWORD_DEFAULT);
+    //} else {
+    //    $hash = $admin_password;  
+    //}
     file_put_contents($htpasswd_path, $config_content["installer"]["username"] . ":" . $hash);
 
     // Create the .htaccess for the secure directory.
